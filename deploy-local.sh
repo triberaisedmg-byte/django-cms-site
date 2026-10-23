@@ -63,21 +63,21 @@ echo -e "${BOLD}${BLUE}  TribeRaised Marketing CMS — Local Docker Deployment P
 echo -e "${BOLD}${BLUE}================================================================${NC}\n"
 
 # 1. Check Docker Daemon
-echo -e "${BLUE}[1/5] Checking Docker daemon status...${NC}"
+echo -e "${BLUE}[1/6] Checking Docker daemon status...${NC}"
 if ! docker info > /dev/null 2>&1; then
     echo -e "${RED}Error: Docker daemon is not running. Please start Docker and retry.${NC}"
     exit 1
 fi
 echo -e "${GREEN}✓ Docker daemon is active.${NC}\n"
 
-# 2. Check / Setup Network
+# 2. Check / Setup Network & Shared Database
 COMPOSE_FILE="docker-compose.local.yml"
 if [ "$STANDALONE" = true ]; then
     COMPOSE_FILE="docker-compose.standalone.yml"
-    echo -e "${BLUE}[2/5] Operating in STANDALONE mode with dedicated database...${NC}"
+    echo -e "${BLUE}[2/6] Operating in STANDALONE mode with dedicated database...${NC}"
     echo -e "${CYAN}Using compose file: ${COMPOSE_FILE}${NC}\n"
 else
-    echo -e "${BLUE}[2/5] Checking shared Docker network (triberaised_tr-network)...${NC}"
+    echo -e "${BLUE}[2/6] Checking shared Docker network (triberaised_tr-network)...${NC}"
     if ! docker network inspect triberaised_tr-network > /dev/null 2>&1; then
         echo -e "${YELLOW}Network 'triberaised_tr-network' not found. Creating it now...${NC}"
         docker network create triberaised_tr-network
@@ -85,10 +85,51 @@ else
     else
         echo -e "${GREEN}✓ Network 'triberaised_tr-network' is active.${NC}\n"
     fi
+
+    # 3. Verify Shared PostgreSQL Container & Initialize Database
+    echo -e "${BLUE}[3/6] Verifying shared PostgreSQL server & initializing database...${NC}"
+    PG_CONTAINER=""
+    if docker ps --format '{{.Names}}' | grep -q '^tr-profile-postgres$'; then
+        PG_CONTAINER="tr-profile-postgres"
+    elif docker ps --format '{{.Names}}' | grep -q '^postgres$'; then
+        PG_CONTAINER="postgres"
+    fi
+
+    if [ -z "$PG_CONTAINER" ]; then
+        echo -e "${RED}Error: Shared PostgreSQL container (tr-profile-postgres) is not running.${NC}"
+        echo -e "${YELLOW}Hint: Start the main TribeRaised stack in /home/markgordon/Documents/GitHub/triberaised via ./deploy-local.sh, or deploy in standalone mode: ./deploy-local.sh --standalone${NC}"
+        exit 1
+    fi
+
+    # Wait for PostgreSQL readiness
+    printf "  Probing PostgreSQL container '${PG_CONTAINER}'..."
+    for i in {1..30}; do
+        if docker exec "$PG_CONTAINER" pg_isready -U "$POSTGRES_USER" > /dev/null 2>&1; then
+            echo -e " ${GREEN}Ready!${NC}"
+            break
+        fi
+        printf "."
+        sleep 1
+        if [ "$i" -eq 30 ]; then
+            echo -e "\n${RED}Error: Timed out waiting for PostgreSQL in container '${PG_CONTAINER}'.${NC}"
+            exit 1
+        fi
+    done
+
+    # Idempotent database creation
+    echo -e "  Checking target database '${POSTGRES_DB}' on '${PG_CONTAINER}'..."
+    DB_EXISTS=$(docker exec "$PG_CONTAINER" psql -U "$POSTGRES_USER" -tAc "SELECT 1 FROM pg_database WHERE datname = '${POSTGRES_DB}'" 2>/dev/null || true)
+    if [ "$DB_EXISTS" != "1" ]; then
+        echo -e "  ${YELLOW}Database '${POSTGRES_DB}' does not exist. Creating database...${NC}"
+        docker exec "$PG_CONTAINER" psql -U "$POSTGRES_USER" -c "CREATE DATABASE ${POSTGRES_DB};"
+        echo -e "  ${GREEN}✓ Database '${POSTGRES_DB}' created successfully.${NC}\n"
+    else
+        echo -e "  ${GREEN}✓ Database '${POSTGRES_DB}' exists and is ready.${NC}\n"
+    fi
 fi
 
-# 3. Build Docker Image
-echo -e "${BLUE}[3/5] Building Django CMS container image (tr-django-cms)...${NC}"
+# 4. Build Docker Image
+echo -e "${BLUE}[4/6] Building Django CMS container image (tr-django-cms)...${NC}"
 BUILD_ARGS=""
 if [ "$FORCE_BUILD" = true ]; then
     BUILD_ARGS="--no-cache"
@@ -96,13 +137,13 @@ fi
 docker compose -f "$COMPOSE_FILE" build $BUILD_ARGS
 echo -e "${GREEN}✓ Container image built successfully.${NC}\n"
 
-# 4. Spin Up Services in Detached Mode
-echo -e "${BLUE}[4/5] Launching container services in detached mode...${NC}"
+# 5. Spin Up Services in Detached Mode & Apply Migrations
+echo -e "${BLUE}[5/6] Launching container services and applying migrations...${NC}"
 docker compose -f "$COMPOSE_FILE" up -d
 echo -e "${GREEN}✓ Container launched.${NC}\n"
 
-# 5. Summary & Useful Commands
-echo -e "${BLUE}[5/5] Docker Container Status:${NC}"
+# 6. Summary & Useful Commands
+echo -e "${BLUE}[6/6] Docker Container Status:${NC}"
 docker compose -f "$COMPOSE_FILE" ps
 
 echo -e "\n${BOLD}${GREEN}================================================================${NC}"
