@@ -1,0 +1,67 @@
+<div class="inline-flex items-center gap-2.5 select-none {{ logo_classes|default:'' }}">
+    <!-- SVG Emblem: Infinity-Heart Family Embrace -->
+    <svg
+        width="{{ logo_width|default:'36' }}"
+        height="{{ logo_height|default:'30' }}"
+        viewBox="0 0 100 80"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        class="shrink-0 transition-transform duration-200 hover:scale-105"
+        role="img"
+        aria-label="TribeRaised Logo"
+    >
+        <defs>
+            <!-- Main soothing neurodiversity spectrum gradient -->
+            <linearGradient id="trBrandGrad" x1="5" y1="40" x2="95" y2="40" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#14B8A6" />     <!-- Calming Teal -->
+                <stop offset="50%" stop-color="#6366F1" />    <!-- Nurturing Indigo -->
+                <stop offset="100%" stop-color="#F59E0B" />   <!-- Warm Amber -->
+            </linearGradient>
+
+            <!-- Soft ambient glow for dark mode -->
+            <filter id="trGlow" x="-10%" y="-10%" width="120%" height="120%">
+                <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#6366F1" flood-opacity="0.3" />
+            </filter>
+        </defs>
+
+        <g filter="url(#trGlow)">
+            <!-- Continuous Ribbon: Left Infinity Loop, Right Heart Contour -->
+            <path
+                d="M 50 48
+                   C 38 65, 12 65, 12 45
+                   C 12 25, 38 25, 50 42
+                   C 62 25, 88 20, 88 38
+                   C 88 56, 64 68, 50 74
+                   C 36 68, 12 56, 12 38"
+                stroke="url(#trBrandGrad)"
+                stroke-width="10"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+            />
+            <!-- Left Family Node: Teal -->
+            <circle cx="28" cy="18" r="6.5" fill="#14B8A6" />
+            <!-- Right Family Node: Amber -->
+            <circle cx="72" cy="18" r="6.5" fill="#F59E0B" />
+        </g>
+    </svg>
+
+    {% if not hide_wordmark %}
+    <div class="flex flex-col justify-center leading-tight">
+        <div class="flex items-center gap-1.5">
+            <span class="font-bold tracking-tight text-slate-900 dark:text-white {{ text_size|default:'text-xl' }}">
+                Tribe<span class="text-indigo-600 dark:text-indigo-400">Raised</span>
+            </span>
+            {% if badge_text %}
+            <span class="text-[10px] px-2 py-0.5 rounded-full font-medium bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-500/20">
+                {{ badge_text }}
+            </span>
+            {% endif %}
+        </div>
+        {% if show_subtitle %}
+        <span class="text-xs font-medium text-slate-500 dark:text-slate-400">
+            {{ subtitle_text|default:"Empowering Neurodivergent Families" }}
+        </span>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>

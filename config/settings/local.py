@@ -15,7 +15,7 @@ SECRET_KEY = env.str(
 
 ALLOWED_HOSTS = env.list(
     "ALLOWED_HOSTS",
-    default=["localhost", "127.0.0.1", "0.0.0.0", "[::1]", "web"],
+    default=["localhost", "127.0.0.1", "0.0.0.0", "[::1]", "web", "testserver"],
 )
 
 # Email Backend for local development

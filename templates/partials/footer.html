@@ -1,0 +1,74 @@
+<footer class="w-full bg-slate-900 dark:bg-night-950 text-slate-400 py-12 border-t border-slate-800 dark:border-night-800 mt-auto transition-colors duration-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 pb-10 border-b border-slate-800 dark:border-night-800">
+            <!-- Brand Column -->
+            <div class="md:col-span-1 space-y-4">
+                <a href="/" class="inline-block" aria-label="TribeRaised Home">
+                    {% include "partials/logo.html" with logo_width="36" logo_height="28" text_size="text-lg" %}
+                </a>
+                <p class="text-sm text-slate-400 leading-relaxed">
+                    Empowering neurodivergent families through safe spaces, shared knowledge, and sensory-friendly digital tools.
+                </p>
+            </div>
+
+            <!-- Ecosystem Cross-Links -->
+            <div class="space-y-3">
+                <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-200">Ecosystem</h3>
+                <ul class="space-y-2 text-sm">
+                    <li>
+                        <a href="https://profile.triberaised.com" target="_blank" rel="noopener noreferrer" class="hover:text-brand-400 transition-colors">
+                            Profile Hub (tr-profile)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://forum.triberaised.com" target="_blank" rel="noopener noreferrer" class="hover:text-brand-400 transition-colors">
+                            Community Forum (tr-forum)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://app.triberaised.com" target="_blank" rel="noopener noreferrer" class="hover:text-brand-400 transition-colors">
+                            Mobile & Web App (Flutter)
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/solutions/" class="hover:text-brand-400 transition-colors">
+                            Solutions & Architecture
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Navigation -->
+            <div class="space-y-3">
+                <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-200">Navigation</h3>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="/" class="hover:text-brand-400 transition-colors">Home</a></li>
+                    <li><a href="/about/" class="hover:text-brand-400 transition-colors">Our Mission & Story</a></li>
+                    <li><a href="/solutions/" class="hover:text-brand-400 transition-colors">Features & Apps</a></li>
+                    <li><a href="/admin/" class="hover:text-brand-400 transition-colors">CMS Editor Portal</a></li>
+                </ul>
+            </div>
+
+            <!-- Governance & Accessibility -->
+            <div class="space-y-3">
+                <h3 class="text-sm font-semibold uppercase tracking-wider text-slate-200">Commitment</h3>
+                <ul class="space-y-2 text-sm">
+                    <li><span class="text-sage-400 font-medium">✓ Sensory-Friendly UX</span></li>
+                    <li><span class="text-calmTeal-400 font-medium">✓ WCAG 2.1 AA Compliant</span></li>
+                    <li><span class="text-brand-400 font-medium">✓ Zero Commercial Profiling</span></li>
+                    <li><span class="text-warmAmber-400 font-medium">✓ Community-Governed</span></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Sub-footer / Legal -->
+        <div class="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
+            <p>&copy; {% now "Y" %} TribeRaised. All rights reserved. Open source ecosystem.</p>
+            <div class="flex items-center space-x-6">
+                <a href="/privacy/" class="hover:text-slate-400 transition-colors">Privacy Policy</a>
+                <a href="/terms/" class="hover:text-slate-400 transition-colors">Terms of Service</a>
+                <a href="/accessibility/" class="hover:text-slate-400 transition-colors">Accessibility Statement</a>
+            </div>
+        </div>
+    </div>
+</footer>

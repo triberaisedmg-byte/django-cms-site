@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --card-bg: #ffffff;
+  --card-border: #e2e8f0;
+  --muted-text: #64748b;
+  --color-brand500: #6366F1;
+  --color-brand600: #4F46E5;
+  --color-calmTeal500: #14B8A6;
+  --color-calmTeal600: #0D9488;
+  --color-sage500: #10B981;
+  --color-warmAmber500: #F59E0B;
+  --color-night950: #070B14;
+  --color-night900: #0B1120;
+  --color-night850: #111827;
+  --color-night750: #1E293B;
+}
+
+.dark {
+  --background: #070B14;
+  --foreground: #f8fafc;
+  --card-bg: #111827;
+  --card-border: #1E293B;
+  --muted-text: #94a3b8;
+}
+
+/* Sensory-friendly focus styling */
+:focus-visible {
+  outline: 2px solid #6366F1;
+  outline-offset: 2px;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
+/* Base body transition */
+body {
+  transition: background-color 0.2s ease, color 0.2s ease;
+}

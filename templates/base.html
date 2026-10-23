@@ -1,31 +1,122 @@
 {% load cms_tags sekizai_tags i18n static %}
 <!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE }}">
+<html lang="{{ LANGUAGE_CODE|default:'en' }}" class="scroll-smooth">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% page_attribute "page_title" %} | TribeRaised</title>
     <meta name="description" content="{% page_attribute 'meta_description' %}">
+
+    <!-- Pre-render theme detection to prevent flash of wrong theme (FOUC) -->
+    <script>
+        (function() {
+            try {
+                const storedTheme = localStorage.getItem('tr-theme');
+                const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (storedTheme === 'dark' || (!storedTheme && systemDark)) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            } catch (_) {}
+        })();
+    </script>
+
+    <!-- Tailwind Play CDN with TribeRaised Design Tokens -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        background: 'var(--background)',
+                        foreground: 'var(--foreground)',
+                        brand: {
+                            50: '#EEF2FF',
+                            100: '#E0E7FF',
+                            200: '#C7D2FE',
+                            300: '#A5B4FC',
+                            400: '#818CF8',
+                            500: '#6366F1',
+                            600: '#4F46E5',
+                            700: '#4338CA',
+                            800: '#3730A3',
+                            900: '#312E81',
+                        },
+                        calmTeal: {
+                            50: '#F0FDFA',
+                            100: '#CCFBF1',
+                            200: '#99F6E4',
+                            300: '#5EEAD4',
+                            400: '#2DD4BF',
+                            500: '#14B8A6',
+                            600: '#0D9488',
+                            700: '#0F766E',
+                            800: '#115E59',
+                            900: '#134E4A',
+                        },
+                        sage: {
+                            50: '#F0FDF4',
+                            100: '#DCFCE7',
+                            200: '#BBF7D0',
+                            300: '#86EFAC',
+                            400: '#4ADE80',
+                            500: '#10B981',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065F46',
+                            900: '#064E3B',
+                        },
+                        warmAmber: {
+                            50: '#FFFBEB',
+                            100: '#FEF3C7',
+                            200: '#FDE68A',
+                            300: '#FCD34D',
+                            400: '#FBBF24',
+                            500: '#F59E0B',
+                            600: '#D97706',
+                            700: '#B45309',
+                            800: '#92400E',
+                            900: '#78350F',
+                        },
+                        lavender: {
+                            50: '#FAF5FF',
+                            100: '#F3E8FF',
+                            200: '#E9D5FF',
+                            300: '#D8B4FE',
+                            400: '#C084FC',
+                            500: '#A855F7',
+                            600: '#9333EA',
+                            700: '#7E22CE',
+                            800: '#6B21A8',
+                            900: '#581C87',
+                        },
+                        night: {
+                            750: '#1E293B',
+                            800: '#162032',
+                            850: '#111827',
+                            900: '#0B1120',
+                            950: '#070B14',
+                        },
+                    },
+                    fontFamily: {
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+                    },
+                },
+            },
+        };
+    </script>
+
+    <!-- Custom CSS Variables & Sensory-Friendly Styles -->
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+
     {% render_block "css" %}
 </head>
-<body class="min-h-screen bg-slate-50 text-slate-900 antialiased flex flex-col font-sans">
+<body class="min-h-screen bg-slate-50 dark:bg-night-950 text-slate-900 dark:text-slate-100 antialiased flex flex-col font-sans transition-colors duration-200">
     {% cms_toolbar %}
-    <header class="w-full bg-white border-b border-slate-200 shadow-sm sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <a href="/" class="flex items-center gap-2">
-                <span class="text-xl font-bold bg-gradient-to-r from-indigo-600 to-teal-500 bg-clip-text text-transparent">
-                    TribeRaised
-                </span>
-            </a>
-            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-700">
-                <a href="/" class="hover:text-indigo-600 transition-colors">Home</a>
-                <a href="/admin/" class="hover:text-indigo-600 transition-colors">CMS Admin</a>
-                <a href="https://profile.triberaised.com" class="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors">
-                    Profile Portal
-                </a>
-            </nav>
-        </div>
-    </header>
+
+    {% include "partials/navbar.html" %}
 
     <main class="flex-grow">
         {% block content %}
@@ -33,11 +124,71 @@
         {% endblock content %}
     </main>
 
-    <footer class="w-full bg-slate-900 text-slate-400 py-8 border-t border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
-            <p>&copy; {% now "Y" %} TribeRaised. All rights reserved. Empowering neurodivergent families.</p>
-        </div>
-    </footer>
+    {% include "partials/footer.html" %}
+
+    <!-- Global Layout Scripts (Theme Toggle & Mobile Menu) -->
+    <script>
+        (function() {
+            // Theme Toggle Setup
+            const themeToggleBtn = document.getElementById('theme-toggle');
+            const mobileThemeToggleBtn = document.getElementById('mobile-theme-toggle');
+            const darkIcon = document.getElementById('theme-toggle-dark-icon');
+            const lightIcon = document.getElementById('theme-toggle-light-icon');
+
+            function updateIcons() {
+                const isDark = document.documentElement.classList.contains('dark');
+                if (darkIcon && lightIcon) {
+                    if (isDark) {
+                        lightIcon.classList.remove('hidden');
+                        darkIcon.classList.add('hidden');
+                    } else {
+                        lightIcon.classList.add('hidden');
+                        darkIcon.classList.remove('hidden');
+                    }
+                }
+            }
+
+            function toggleTheme() {
+                const isDark = document.documentElement.classList.toggle('dark');
+                localStorage.setItem('tr-theme', isDark ? 'dark' : 'light');
+                updateIcons();
+            }
+
+            if (themeToggleBtn) themeToggleBtn.addEventListener('click', toggleTheme);
+            if (mobileThemeToggleBtn) mobileThemeToggleBtn.addEventListener('click', toggleTheme);
+            updateIcons();
+
+            // Mobile Menu Drawer Toggle Setup
+            const mobileMenuBtn = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const openIcon = document.getElementById('mobile-menu-open-icon');
+            const closeIcon = document.getElementById('mobile-menu-close-icon');
+
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', function() {
+                    const expanded = mobileMenuBtn.getAttribute('aria-expanded') === 'true';
+                    mobileMenuBtn.setAttribute('aria-expanded', !expanded);
+                    mobileMenu.classList.toggle('hidden');
+                    if (openIcon && closeIcon) {
+                        openIcon.classList.toggle('hidden');
+                        closeIcon.classList.toggle('hidden');
+                    }
+                });
+
+                // Close on ESC key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && !mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                        mobileMenuBtn.setAttribute('aria-expanded', 'false');
+                        if (openIcon && closeIcon) {
+                            openIcon.classList.remove('hidden');
+                            closeIcon.classList.add('hidden');
+                        }
+                    }
+                });
+            }
+        })();
+    </script>
 
     {% render_block "js" %}
 </body>

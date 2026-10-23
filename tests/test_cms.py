@@ -42,3 +42,25 @@ def test_root_page_serves_html():
     client = Client()
     response = client.get("/")
     assert response.status_code == 200
+
+
+@pytest.mark.django_db
+def test_design_system_partials_rendering():
+    """Verify that navbar, footer, and logo partials render properly."""
+    from django.template.loader import render_to_string
+
+    logo_html = render_to_string("partials/logo.html", {"badge_text": "Safe Space"})
+    assert "TribeRaised Logo" in logo_html
+    assert "Safe Space" in logo_html
+    assert "#14B8A6" in logo_html
+    assert "#6366F1" in logo_html
+    assert "#F59E0B" in logo_html
+
+    navbar_html = render_to_string("partials/navbar.html")
+    assert "mobile-menu-button" in navbar_html
+    assert "profile.triberaised.com" in navbar_html
+
+    footer_html = render_to_string("partials/footer.html")
+    assert "Sensory-Friendly UX" in footer_html
+    assert "WCAG 2.1 AA Compliant" in footer_html
+
