@@ -18,3 +18,7 @@ psycopg2-binary>=2.9.9
 # WSGI Server & Static Files
 gunicorn>=21.2.0
 whitenoise[brotli]>=6.6.0
+
+# Cloud Media Storage & Image Pipeline
+django-storages[google]>=1.14.2
+google-cloud-storage>=2.14.0

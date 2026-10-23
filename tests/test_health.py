@@ -15,6 +15,7 @@ def test_healthz_endpoint():
     data = response.json()
     assert data["status"] == "healthy"
     assert data["database"] == "connected"
+    assert data["cache"] == "connected"
     assert data["service"] == "triberaised-django-cms"
 
 
@@ -26,3 +27,4 @@ def test_healthz_trailing_slash():
     assert response.status_code == 200
     data = response.json()
     assert data["status"] == "healthy"
+    assert data["cache"] == "connected"

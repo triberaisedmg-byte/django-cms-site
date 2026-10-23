@@ -1,0 +1,32 @@
+{
+  "pages": [
+    {
+      "title": "Home",
+      "slug": "home",
+      "is_home": true,
+      "in_navigation": true,
+      "plugins": ["HeroBannerPlugin", "FeatureGridPlugin", "GalleryPlugin", "TestimonialPlugin", "CtaBannerPlugin"]
+    },
+    {
+      "title": "About Us",
+      "slug": "about",
+      "is_home": false,
+      "in_navigation": true,
+      "plugins": ["HeroBannerPlugin", "FeatureGridPlugin", "TestimonialPlugin"]
+    },
+    {
+      "title": "Solutions",
+      "slug": "solutions",
+      "is_home": false,
+      "in_navigation": true,
+      "plugins": ["HeroBannerPlugin", "GalleryPlugin", "CtaBannerPlugin"]
+    },
+    {
+      "title": "Contact",
+      "slug": "contact",
+      "is_home": false,
+      "in_navigation": true,
+      "plugins": ["HeroBannerPlugin", "CtaBannerPlugin"]
+    }
+  ]
+}

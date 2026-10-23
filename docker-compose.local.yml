@@ -25,6 +25,9 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       DATABASE_URL: ${DOCKER_DATABASE_URL:-postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@${DOCKER_POSTGRES_HOST:-tr-profile-postgres}:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-triberaised_cms}}
       ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1,0.0.0.0,[::1],web}
+      USE_GCS_MEDIA: ${USE_GCS_MEDIA:-False}
+      GS_BUCKET_NAME: ${GS_BUCKET_NAME:-}
+      USE_MINIO: ${USE_MINIO:-False}
     ports:
       - "${PORT:-8001}:8000"
     volumes:

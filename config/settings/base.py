@@ -56,10 +56,12 @@ INSTALLED_APPS = [
     "djangocms_text_ckeditor",
     # Project Apps
     "apps.core",
+    "apps.marketing_cms",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "apps.core.middleware.SecurityHeadersMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -162,8 +164,33 @@ STATICFILES_DIRS = [
 ]
 
 # Media files (User uploads / CMS assets)
-MEDIA_URL = env("MEDIA_URL", default="/media/")
-MEDIA_ROOT = BASE_DIR / "media"
+USE_GCS_MEDIA = env.bool("USE_GCS_MEDIA", default=False)
+GS_BUCKET_NAME = env.str("GS_BUCKET_NAME", default="")
+
+if USE_GCS_MEDIA and GS_BUCKET_NAME:
+    MEDIA_URL = env.str(
+        "MEDIA_URL",
+        default=f"https://storage.googleapis.com/{GS_BUCKET_NAME}/media/",
+    )
+    STORAGES = {
+        "default": {
+            "BACKEND": "config.settings.storage.TribeRaisedGCSMediaStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    }
+else:
+    MEDIA_URL = env("MEDIA_URL", default="/media/")
+    MEDIA_ROOT = BASE_DIR / "media"
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    }
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
