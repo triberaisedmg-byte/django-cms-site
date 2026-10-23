@@ -1,0 +1,44 @@
+{% load cms_tags sekizai_tags i18n static %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% page_attribute "page_title" %} | TribeRaised</title>
+    <meta name="description" content="{% page_attribute 'meta_description' %}">
+    {% render_block "css" %}
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-900 antialiased flex flex-col font-sans">
+    {% cms_toolbar %}
+    <header class="w-full bg-white border-b border-slate-200 shadow-sm sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-2">
+                <span class="text-xl font-bold bg-gradient-to-r from-indigo-600 to-teal-500 bg-clip-text text-transparent">
+                    TribeRaised
+                </span>
+            </a>
+            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-700">
+                <a href="/" class="hover:text-indigo-600 transition-colors">Home</a>
+                <a href="/admin/" class="hover:text-indigo-600 transition-colors">CMS Admin</a>
+                <a href="https://profile.triberaised.com" class="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors">
+                    Profile Portal
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        {% block content %}
+            {% placeholder "content" %}
+        {% endblock content %}
+    </main>
+
+    <footer class="w-full bg-slate-900 text-slate-400 py-8 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm">
+            <p>&copy; {% now "Y" %} TribeRaised. All rights reserved. Empowering neurodivergent families.</p>
+        </div>
+    </footer>
+
+    {% render_block "js" %}
+</body>
+</html>
