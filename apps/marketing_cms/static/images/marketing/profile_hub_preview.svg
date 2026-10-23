@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120" />
+      <stop offset="100%" stop-color="#111827" />
+    </linearGradient>
+    <linearGradient id="brandGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#14B8A6" />
+      <stop offset="50%" stop-color="#6366F1" />
+      <stop offset="100%" stop-color="#F59E0B" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="500" rx="16" fill="url(#bgGrad)" stroke="#1E293B" stroke-width="2"/>
+  <rect x="0" y="0" width="800" height="48" rx="16" fill="#1E293B" />
+  <circle cx="28" cy="24" r="6" fill="#EF4444" opacity="0.8"/>
+  <circle cx="48" cy="24" r="6" fill="#F59E0B" opacity="0.8"/>
+  <circle cx="68" cy="24" r="6" fill="#10B981" opacity="0.8"/>
+  <text x="400" y="30" fill="#94A3B8" font-family="Inter, sans-serif" font-size="13" font-weight="500" text-anchor="middle">profile.triberaised.com — Family Profile Hub</text>
+  
+  <!-- Sidebar -->
+  <rect x="30" y="70" width="180" height="400" rx="10" fill="#162032" stroke="#1E293B" />
+  <rect x="50" y="95" width="140" height="32" rx="6" fill="#6366F1" fill-opacity="0.2" />
+  <text x="65" y="116" fill="#818CF8" font-family="Inter, sans-serif" font-size="12" font-weight="600">Family Circles</text>
+  <rect x="50" y="137" width="140" height="28" rx="6" fill="transparent" />
+  <text x="65" y="156" fill="#94A3B8" font-family="Inter, sans-serif" font-size="12">Dependents</text>
+  <rect x="50" y="175" width="140" height="28" rx="6" fill="transparent" />
+  <text x="65" y="194" fill="#94A3B8" font-family="Inter, sans-serif" font-size="12">Sensory Preferences</text>
+  <rect x="50" y="213" width="140" height="28" rx="6" fill="transparent" />
+  <text x="65" y="232" fill="#94A3B8" font-family="Inter, sans-serif" font-size="12">Privacy &amp; Security</text>
+
+  <!-- Main Content Area -->
+  <rect x="230" y="70" width="540" height="400" rx="10" fill="#111827" stroke="#1E293B" />
+  <text x="260" y="115" fill="#FFFFFF" font-family="Inter, sans-serif" font-size="20" font-weight="700">The Gordon Family Circle</text>
+  <rect x="260" y="130" width="120" height="4" rx="2" fill="url(#brandGrad)" />
+  
+  <!-- Cards -->
+  <rect x="260" y="155" width="235" height="135" rx="8" fill="#162032" stroke="#1E293B" />
+  <circle cx="290" cy="185" r="16" fill="#14B8A6" fill-opacity="0.2" />
+  <text x="290" y="190" fill="#2DD4BF" font-family="Inter, sans-serif" font-size="12" text-anchor="middle" font-weight="bold">MG</text>
+  <text x="320" y="185" fill="#FFFFFF" font-family="Inter, sans-serif" font-size="14" font-weight="600">Mark Gordon</text>
+  <text x="320" y="202" fill="#94A3B8" font-family="Inter, sans-serif" font-size="11">Parent / Primary Guardian</text>
+  <text x="280" y="240" fill="#CBD5E1" font-family="Inter, sans-serif" font-size="11">Low-contrast mode, no flashing animations</text>
+
+  <rect x="515" y="155" width="235" height="135" rx="8" fill="#162032" stroke="#1E293B" />
+  <circle cx="545" cy="185" r="16" fill="#F59E0B" fill-opacity="0.2" />
+  <text x="545" y="190" fill="#FBBF24" font-family="Inter, sans-serif" font-size="12" text-anchor="middle" font-weight="bold">CR</text>
+  <text x="575" y="185" fill="#FFFFFF" font-family="Inter, sans-serif" font-size="14" font-weight="600">Chloe Gordon</text>
+  <text x="575" y="202" fill="#94A3B8" font-family="Inter, sans-serif" font-size="11">Dependent Profile</text>
+  <text x="535" y="240" fill="#CBD5E1" font-family="Inter, sans-serif" font-size="11">Audio sensitivity, visual routines enabled</text>
+
+  <!-- Bottom Panel -->
+  <rect x="260" y="310" width="490" height="140" rx="8" fill="#162032" stroke="#1E293B" />
+  <text x="285" y="345" fill="#818CF8" font-family="Inter, sans-serif" font-size="13" font-weight="600">Federated Single Sign-On Active</text>
+  <text x="285" y="375" fill="#94A3B8" font-family="Inter, sans-serif" font-size="12">Seamless authenticated navigation across Safe Forum and Universal App.</text>
+  <text x="285" y="405" fill="#10B981" font-family="Inter, sans-serif" font-size="11">✓ Zero tracking telemetry enabled</text>
+</svg>
