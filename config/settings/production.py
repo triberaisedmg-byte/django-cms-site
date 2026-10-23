@@ -45,15 +45,32 @@ CSRF_TRUSTED_ORIGINS = env.list(
     ],
 )
 
-# WhiteNoise storage for compressed static asset delivery
-STORAGES = {
-    "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-    },
-}
+# Google Cloud Storage (GCS) and WhiteNoise production storage
+USE_GCS_MEDIA = env.bool("USE_GCS_MEDIA", default=True)
+GS_BUCKET_NAME = env.str("GS_BUCKET_NAME", default="triberaised-marketing-media")
+
+if USE_GCS_MEDIA and GS_BUCKET_NAME:
+    MEDIA_URL = env.str(
+        "MEDIA_URL",
+        default=f"https://storage.googleapis.com/{GS_BUCKET_NAME}/media/",
+    )
+    STORAGES = {
+        "default": {
+            "BACKEND": "config.settings.storage.TribeRaisedGCSMediaStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
+else:
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
 
 # Production Logging to STDOUT for GCP Cloud Logging
 LOGGING = {
