@@ -63,4 +63,3 @@ def test_design_system_partials_rendering():
     footer_html = render_to_string("partials/footer.html")
     assert "Sensory-Friendly UX" in footer_html
     assert "WCAG 2.1 AA Compliant" in footer_html
-

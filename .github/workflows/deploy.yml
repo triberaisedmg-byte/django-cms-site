@@ -1,0 +1,143 @@
+name: Build, Test & Deploy to GCP Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target Environment (uat or prod)'
+        required: true
+        default: 'prod'
+        type: choice
+        options:
+          - uat
+          - prod
+
+concurrency:
+  group: deploy-cms-${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'prod' || 'uat') }}
+  cancel-in-progress: false
+
+jobs:
+  test:
+    name: Lint & Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt -r requirements-dev.txt
+
+      - name: Run Flake8 Linter
+        run: flake8 .
+
+      - name: Run Pytest Suite
+        run: pytest -v
+
+  deploy:
+    name: Deploy to GCP Cloud Run (${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'Production' || 'UAT') }})
+    needs: test
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging'))
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'production' || 'uat') }}
+
+    permissions:
+      contents: read
+      id-token: write
+
+    env:
+      ENV_NAME: ${{ github.event.inputs.environment || (github.ref == 'refs/heads/main' && 'prod' || 'uat') }}
+      GCP_REGION: ${{ vars.GCP_REGION || 'us-central1' }}
+      GCP_PROJECT_ID: ${{ vars.GCP_PROJECT_ID || 'triberaised-prod' }}
+      ARTIFACT_REGISTRY: ${{ vars.GCP_REGION || 'us-central1' }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID || 'triberaised-prod' }}/tr-images
+      IMAGE_TAG: ${{ github.sha }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Configure Target Environment Parameters
+        id: env-config
+        run: |
+          if [ "${{ env.ENV_NAME }}" = "prod" ]; then
+            echo "SERVICE_SUFFIX=prod" >> $GITHUB_ENV
+            echo "MIN_INSTANCES=1" >> $GITHUB_ENV
+            echo "CUSTOM_DOMAIN=triberaised.com" >> $GITHUB_ENV
+          else
+            echo "SERVICE_SUFFIX=uat" >> $GITHUB_ENV
+            echo "MIN_INSTANCES=0" >> $GITHUB_ENV
+            echo "CUSTOM_DOMAIN=cms-uat.triberaised.com" >> $GITHUB_ENV
+          fi
+
+      - name: Authenticate to Google Cloud via Workload Identity Federation
+        id: gcp-auth
+        if: "${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER != '' }}"
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Fallback: Authenticate via GCP Service Account Key
+        if: "${{ steps.gcp-auth.outcome == 'skipped' && secrets.GCP_SA_KEY != '' }}"
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK & Docker Authentication
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for GCP Artifact Registry
+        run: gcloud auth configure-docker ${{ env.GCP_REGION }}-docker.pkg.dev --quiet
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build & Push Django CMS Container Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: |
+            ${{ env.ARTIFACT_REGISTRY }}/django-cms-site:${{ env.SERVICE_SUFFIX }}-${{ env.IMAGE_TAG }}
+            ${{ env.ARTIFACT_REGISTRY }}/django-cms-site:${{ env.SERVICE_SUFFIX }}-latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Deploy to GCP Cloud Run
+        run: |
+          gcloud run deploy tr-django-cms-${{ env.SERVICE_SUFFIX }} \
+            --image=${{ env.ARTIFACT_REGISTRY }}/django-cms-site:${{ env.SERVICE_SUFFIX }}-${{ env.IMAGE_TAG }} \
+            --region=${{ env.GCP_REGION }} \
+            --platform=managed \
+            --allow-unauthenticated \
+            --min-instances=${{ env.MIN_INSTANCES }} \
+            --max-instances=5 \
+            --cpu=1 \
+            --memory=512Mi \
+            --port=8000 \
+            --set-env-vars="DJANGO_SETTINGS_MODULE=config.settings.production,USE_GCS_MEDIA=True,GS_BUCKET_NAME=triberaised-marketing-media,SECURE_SSL_REDIRECT=True" \
+            --set-secrets="SECRET_KEY=tr-cms-secret-key-${{ env.SERVICE_SUFFIX }}:latest,DATABASE_URL=tr-postgres-conn-string-${{ env.SERVICE_SUFFIX }}:latest" \
+            --quiet
+
+      - name: Verify Service Health Probe
+        run: |
+          SERVICE_URL=$(gcloud run services describe tr-django-cms-${{ env.SERVICE_SUFFIX }} --region=${{ env.GCP_REGION }} --format="value(status.url)")
+          echo "Verifying health endpoint at: ${SERVICE_URL}/healthz"
+          curl -f -s "${SERVICE_URL}/healthz" || exit 1
+          echo "Service health check passed successfully!"

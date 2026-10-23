@@ -4,7 +4,7 @@ page tree, CMS plugins, placeholder media, and navigation hierarchy.
 """
 
 from cms.api import add_plugin, create_page
-from cms.models import Page, PageContent
+from cms.models import Page
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 from django.db import transaction
@@ -33,18 +33,18 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS("Created admin user (admin / admin)."))
 
         # 2. Build or update pages
-        home_page = self._seed_home_page(admin_user)
-        about_page = self._seed_about_page(admin_user)
-        solutions_page = self._seed_solutions_page(admin_user)
-        contact_page = self._seed_contact_page(admin_user)
+        self._seed_home_page(admin_user)
+        self._seed_about_page(admin_user)
+        self._seed_solutions_page(admin_user)
+        self._seed_contact_page(admin_user)
 
         self.stdout.write(
             self.style.SUCCESS(
-                f"Successfully seeded marketing page tree:\n"
-                f" - Home (is_home=True)\n"
-                f" - About Us (/about/)\n"
-                f" - Solutions (/solutions/)\n"
-                f" - Contact (/contact/)\n"
+                "Successfully seeded marketing page tree:\n"
+                " - Home (is_home=True)\n"
+                " - About Us (/about/)\n"
+                " - Solutions (/solutions/)\n"
+                " - Contact (/contact/)\n"
             )
         )
 
@@ -84,7 +84,10 @@ class Command(BaseCommand):
             "en",
             headline="Empowering Neurodivergent Families",
             highlight_text="Through Shared Understanding",
-            subheading="A safe, community-governed digital ecosystem combining private family profiles, sensory-friendly collaboration, and authenticated peer forums.",
+            subheading=(
+                "A safe, community-governed digital ecosystem combining private "
+                "family profiles, sensory-friendly collaboration, and authenticated peer forums."
+            ),
             badge_text="Neurodivergent-Led Ecosystem",
             primary_cta_text="Launch Profile Hub",
             primary_cta_url="https://profile.triberaised.com",
@@ -100,7 +103,10 @@ class Command(BaseCommand):
             "en",
             section_badge="Ecosystem Apps & Capabilities",
             section_title="Purpose-Built for Sensory Comfort & Family Privacy",
-            section_subtitle="Explore interconnected tools designed to reduce cognitive friction, support executive function, and protect family sovereignty.",
+            section_subtitle=(
+                "Explore interconnected tools designed to reduce cognitive friction, "
+                "support executive function, and protect family sovereignty."
+            ),
             columns=3,
         )
 
@@ -112,7 +118,10 @@ class Command(BaseCommand):
             target=grid,
             title="TribeRaised Profile Hub",
             badge="Identity & Circles",
-            description="Manage private family circles, sensory profiles, and dependent care preferences in a secure, non-commercial environment.",
+            description=(
+                "Manage private family circles, sensory profiles, and dependent care preferences "
+                "in a secure, non-commercial environment."
+            ),
             icon_name="profile",
             accent_color="indigo",
             link_text="Launch Profile Portal",
@@ -126,7 +135,10 @@ class Command(BaseCommand):
             target=grid,
             title="Safe Community Forum",
             badge="Moderated Space",
-            description="Engage in peer-to-peer discussions with transparent, neurodiversity-affirming moderation rules and zero advertising.",
+            description=(
+                "Engage in peer-to-peer discussions with transparent, neurodiversity-affirming "
+                "moderation rules and zero advertising."
+            ),
             icon_name="forum",
             accent_color="teal",
             link_text="Explore Discussions",
@@ -140,7 +152,10 @@ class Command(BaseCommand):
             target=grid,
             title="Sensory-Friendly UX",
             badge="Cognitive Accessibility",
-            description="Soft contrast palettes, persistent dark/light preferences, and calm layouts designed to prevent sensory overload.",
+            description=(
+                "Soft contrast palettes, persistent dark/light preferences, and calm layouts "
+                "designed to prevent sensory overload."
+            ),
             icon_name="heart",
             accent_color="amber",
             link_text="View Guidelines",
@@ -154,7 +169,10 @@ class Command(BaseCommand):
             target=grid,
             title="Zero Commercial Profiling",
             badge="Privacy First",
-            description="Your family's health, routines, and identity data are never monetized, tracked across the web, or sold to third parties.",
+            description=(
+                "Your family's health, routines, and identity data are never monetized, "
+                "tracked across the web, or sold to third parties."
+            ),
             icon_name="privacy",
             accent_color="sage",
             link_text="Read Privacy Policy",
@@ -168,7 +186,10 @@ class Command(BaseCommand):
             target=grid,
             title="Universal Mobile App",
             badge="Daily Companion",
-            description="Visual schedules, sensory check-ins, and shared routines available across desktop web, iOS, and Android.",
+            description=(
+                "Visual schedules, sensory check-ins, and shared routines available across "
+                "desktop web, iOS, and Android."
+            ),
             icon_name="app",
             accent_color="indigo",
             link_text="Download App",
@@ -182,7 +203,10 @@ class Command(BaseCommand):
             target=grid,
             title="Shared Family Calendar",
             badge="Routine Support",
-            description="Collaborative visual calendars supporting multi-caregiver coordination and school transition planning.",
+            description=(
+                "Collaborative visual calendars supporting multi-caregiver coordination and "
+                "school transition planning."
+            ),
             icon_name="calendar",
             accent_color="teal",
             link_text="Learn More",
@@ -228,7 +252,7 @@ class Command(BaseCommand):
             target=gallery,
             image_url="/static/images/marketing/family_circles_preview.svg",
             alt_text="Family Circles Architecture Screenshot",
-            caption="Caregiver Access: Granular permissions for therapists, educators, and family",
+            caption="Caregiver Access: Granular permissions for therapists and educators",
             badge="Security",
         )
 
@@ -237,7 +261,10 @@ class Command(BaseCommand):
             ph,
             "TestimonialPlugin",
             "en",
-            quote="TribeRaised gave our family a calm, judgment-free space to connect with other neurodivergent families who truly understand our day-to-day journey.",
+            quote=(
+                "TribeRaised gave our family a calm, judgment-free space to connect with other "
+                "neurodivergent families who truly understand our day-to-day journey."
+            ),
             author_name="Sarah & David M.",
             author_role="Parents of Autistic & ADHD Children",
             tag="Family Story",
@@ -250,7 +277,10 @@ class Command(BaseCommand):
             "CtaBannerPlugin",
             "en",
             headline="Ready to Find Your Tribe?",
-            description="Join thousands of neurodivergent families who rely on TribeRaised for genuine belonging, shared support, and total privacy.",
+            description=(
+                "Join thousands of neurodivergent families who rely on TribeRaised for genuine "
+                "belonging, shared support, and total privacy."
+            ),
             cta_text="Launch Free Profile",
             cta_url="https://profile.triberaised.com",
             secondary_cta_text="Visit Safe Forum",
@@ -277,7 +307,11 @@ class Command(BaseCommand):
             "en",
             headline="Built by Neurodivergent Families,",
             highlight_text="For Neurodivergent Families",
-            subheading="We believe digital spaces should nurture rather than overwhelm. TribeRaised provides tools and community spaces designed from the ground up for sensory comfort, executive function, and psychological safety.",
+            subheading=(
+                "We believe digital spaces should nurture rather than overwhelm. "
+                "TribeRaised provides tools and community spaces designed from the ground up "
+                "for sensory comfort, executive function, and psychological safety."
+            ),
             badge_text="Our Mission & Philosophy",
             primary_cta_text="Join the Tribe",
             primary_cta_url="https://profile.triberaised.com",
@@ -292,7 +326,9 @@ class Command(BaseCommand):
             "en",
             section_badge="Core Values",
             section_title="What Sets TribeRaised Apart",
-            section_subtitle="Our founding principles guide every technical, design, and governance decision.",
+            section_subtitle=(
+                "Our founding principles guide every technical, design, and governance decision."
+            ),
             columns=3,
         )
 
@@ -303,7 +339,10 @@ class Command(BaseCommand):
             target=grid,
             title="Sensory-Friendly Architecture",
             badge="WCAG 2.1 AA",
-            description="Muted contrast palettes, gentle animations, and cognitive load reduction built into every interface.",
+            description=(
+                "Muted contrast palettes, gentle animations, and cognitive load reduction "
+                "built into every interface."
+            ),
             icon_name="heart",
             accent_color="teal",
         )
@@ -315,7 +354,10 @@ class Command(BaseCommand):
             target=grid,
             title="Community Governance",
             badge="Grassroots",
-            description="Platform policies and moderation standards are guided by lived neurodivergent experiences, not corporate advertiser incentives.",
+            description=(
+                "Platform policies and moderation standards are guided by lived neurodivergent "
+                "experiences, not corporate advertiser incentives."
+            ),
             icon_name="forum",
             accent_color="indigo",
         )
@@ -327,7 +369,10 @@ class Command(BaseCommand):
             target=grid,
             title="Zero Behavioral Profiling",
             badge="Ethical Tech",
-            description="No behavioral ad targeting. No harvesting of dependent health records. Complete export and deletion rights at any time.",
+            description=(
+                "No behavioral ad targeting. No harvesting of dependent health records. "
+                "Complete export and deletion rights at any time."
+            ),
             icon_name="privacy",
             accent_color="sage",
         )
@@ -336,7 +381,10 @@ class Command(BaseCommand):
             ph,
             "TestimonialPlugin",
             "en",
-            quote="Finally an app that respects sensory limits instead of bombarding parents with high-stress alerts and ads.",
+            quote=(
+                "Finally an app that respects sensory limits instead of bombarding parents "
+                "with high-stress alerts and ads."
+            ),
             author_name="Marcus K.",
             author_role="Adult Autistic Advocate & Parent",
             tag="Advocate Perspective",
@@ -362,7 +410,10 @@ class Command(BaseCommand):
             "en",
             headline="A Unified Digital Ecosystem",
             highlight_text="For Every Step of Your Journey",
-            subheading="Explore our interconnected suite of applications built on open standards, single sign-on federated identity, and accessible UX.",
+            subheading=(
+                "Explore our interconnected suite of applications built on open standards, "
+                "single sign-on federated identity, and accessible UX."
+            ),
             badge_text="Platform Architecture",
             primary_cta_text="Explore Profile Portal",
             primary_cta_url="https://profile.triberaised.com",
@@ -407,7 +458,9 @@ class Command(BaseCommand):
             "CtaBannerPlugin",
             "en",
             headline="Get Started with TribeRaised Today",
-            description="Create your secure family profile in minutes. Free, open, and community governed.",
+            description=(
+                "Create your secure family profile in minutes. Free, open, and community governed."
+            ),
             cta_text="Create Free Account",
             cta_url="https://profile.triberaised.com",
             style="teal",
@@ -432,7 +485,10 @@ class Command(BaseCommand):
             "en",
             headline="Connect with TribeRaised",
             highlight_text="We Are Here to Listen",
-            subheading="Have feedback, need accessibility accommodations, or interested in contributing to open source development? Reach out to our team.",
+            subheading=(
+                "Have feedback, need accessibility accommodations, or interested in contributing "
+                "to open source development? Reach out to our team."
+            ),
             badge_text="Support & Feedback",
             primary_cta_text="Community Forum Support",
             primary_cta_url="https://forum.triberaised.com",
@@ -446,7 +502,10 @@ class Command(BaseCommand):
             "CtaBannerPlugin",
             "en",
             headline="Join Our Open Community",
-            description="Participate in discussions, request features, and help shape the future of sensory-friendly tools.",
+            description=(
+                "Participate in discussions, request features, and help shape the future "
+                "of sensory-friendly tools."
+            ),
             cta_text="Visit Community Forum",
             cta_url="https://forum.triberaised.com",
             style="night",

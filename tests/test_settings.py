@@ -35,3 +35,23 @@ def test_production_settings_validation(monkeypatch):
     assert prod.SECURE_SSL_REDIRECT is True
     assert prod.SESSION_COOKIE_SECURE is True
     assert prod.CSRF_COOKIE_SECURE is True
+    assert prod.SESSION_COOKIE_SAMESITE == "Lax"
+    assert prod.CSRF_COOKIE_SAMESITE == "Lax"
+    assert prod.SECURE_HSTS_SECONDS >= 31536000
+
+
+def test_security_headers_middleware():
+    """Verify SecurityHeadersMiddleware injects CSP and Permissions-Policy headers."""
+    from django.test import RequestFactory
+    from django.http import HttpResponse
+    from apps.core.middleware import SecurityHeadersMiddleware
+
+    rf = RequestFactory()
+    req = rf.get("/")
+    middleware = SecurityHeadersMiddleware(lambda r: HttpResponse("OK"))
+    res = middleware(req)
+
+    assert "Content-Security-Policy" in res.headers
+    assert "https://cdn.tailwindcss.com" in res.headers["Content-Security-Policy"]
+    assert "https://storage.googleapis.com" in res.headers["Content-Security-Policy"]
+    assert "Permissions-Policy" in res.headers

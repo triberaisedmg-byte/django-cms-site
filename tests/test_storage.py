@@ -3,8 +3,6 @@ Tests verifying Google Cloud Storage (GCS) media backend,
 fallback storage behavior, and responsive image pipeline configurations.
 """
 
-import pytest
-from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 
 from config.settings.storage import (

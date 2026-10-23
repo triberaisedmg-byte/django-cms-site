@@ -5,7 +5,6 @@ and graceful fallback to local FileSystemStorage or MinIO for local development.
 """
 
 import os
-from pathlib import Path
 from storages.backends.gcloud import GoogleCloudStorage
 
 

@@ -9,9 +9,7 @@ from django.template.loader import render_to_string
 from apps.marketing_cms.models import (
     CtaBannerPluginModel,
     FeatureCardPluginModel,
-    FeatureGridPluginModel,
     GalleryItemPluginModel,
-    GalleryPluginModel,
     HeroBannerPluginModel,
     TestimonialPluginModel,
 )

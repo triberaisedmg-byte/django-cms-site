@@ -31,7 +31,10 @@ class HeroBannerPluginModel(CMSPlugin):
         help_text="Optional gradient-highlighted phrase appended to or within the headline.",
     )
     subheading = models.TextField(
-        default="A safe, community-governed digital ecosystem combining private family profiles, sensory-friendly collaboration, and authenticated peer forums.",
+        default=(
+            "A safe, community-governed digital ecosystem combining private "
+            "family profiles, sensory-friendly collaboration, and authenticated peer forums."
+        ),
         help_text="Mission statement or introductory paragraph below the headline.",
     )
     badge_text = models.CharField(
@@ -97,7 +100,10 @@ class FeatureGridPluginModel(CMSPlugin):
     )
     section_subtitle = models.TextField(
         blank=True,
-        default="Explore the purpose-built tools designed with sensory considerations, executive function support, and family privacy at the core.",
+        default=(
+            "Explore the purpose-built tools designed with sensory considerations, "
+            "executive function support, and family privacy at the core."
+        ),
         help_text="Introductory text describing the feature collection.",
     )
     columns = models.PositiveSmallIntegerField(
@@ -187,7 +193,10 @@ class GalleryPluginModel(CMSPlugin):
     )
     subtitle = models.TextField(
         blank=True,
-        default="Thoughtful, clutter-free interfaces designed to reduce cognitive load and sensory overwhelm.",
+        default=(
+            "Thoughtful, clutter-free interfaces designed to reduce cognitive load "
+            "and sensory overwhelm."
+        ),
         help_text="Subheading describing the visual showcase.",
     )
     layout = models.CharField(
@@ -282,7 +291,10 @@ class CtaBannerPluginModel(CMSPlugin):
         help_text="Banner headline.",
     )
     description = models.TextField(
-        default="Join thousands of neurodivergent individuals and families who rely on TribeRaised for genuine belonging, shared support, and total privacy.",
+        default=(
+            "Join thousands of neurodivergent individuals and families who rely on "
+            "TribeRaised for genuine belonging, shared support, and total privacy."
+        ),
         help_text="Supporting body text.",
     )
     cta_text = models.CharField(

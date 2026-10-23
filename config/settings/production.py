@@ -21,10 +21,17 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # SSL & Security Redirects
 SECURE_SSL_REDIRECT = env.bool("SECURE_SSL_REDIRECT", default=True)
+# Cookie SameSite & Security
 SESSION_COOKIE_SECURE = env.bool("SESSION_COOKIE_SECURE", default=True)
 CSRF_COOKIE_SECURE = env.bool("CSRF_COOKIE_SECURE", default=True)
 SESSION_COOKIE_HTTPONLY = True
 CSRF_COOKIE_HTTPONLY = False  # Allows CMS frontend / AJAX CSRF handling
+SESSION_COOKIE_SAMESITE = "Lax"
+CSRF_COOKIE_SAMESITE = "Lax"
+
+# Referrer & Cross-Origin Policies
+SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
+SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
 
 # HTTP Strict Transport Security (HSTS)
 SECURE_HSTS_SECONDS = env.int("SECURE_HSTS_SECONDS", default=31536000)  # 1 year
