@@ -1,0 +1,69 @@
+<section class="relative overflow-hidden py-16 sm:py-24 lg:py-32 bg-white dark:bg-night-950 transition-colors duration-200">
+    <!-- Ambient Background Gradients -->
+    <div class="absolute inset-0 pointer-events-none opacity-40 dark:opacity-20 flex justify-center" aria-hidden="true">
+        <div class="w-[60rem] h-[30rem] bg-gradient-to-tr from-brand-500/30 via-calmTeal-500/20 to-warmAmber-500/20 blur-3xl transform -translate-y-12"></div>
+    </div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <!-- Badge -->
+        {% if instance.badge_text %}
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-brand-50 dark:bg-brand-500/10 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-brand-500/20 mb-6 shadow-sm">
+            <span class="w-2 h-2 rounded-full bg-calmTeal-500 animate-pulse"></span>
+            {{ instance.badge_text }}
+        </div>
+        {% endif %}
+
+        <!-- Headline -->
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.15] max-w-4xl mx-auto">
+            {{ instance.headline }}
+            {% if instance.highlight_text %}
+            <span class="block mt-2 bg-gradient-to-r from-calmTeal-500 via-brand-500 to-warmAmber-500 bg-clip-text text-transparent">
+                {{ instance.highlight_text }}
+            </span>
+            {% endif %}
+        </h1>
+
+        <!-- Subheading -->
+        <p class="mt-6 text-lg sm:text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
+            {{ instance.subheading }}
+        </p>
+
+        <!-- CTAs -->
+        <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+            {% if instance.primary_cta_text and instance.primary_cta_url %}
+            <a
+                href="{{ instance.primary_cta_url }}"
+                class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-semibold text-base shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5"
+            >
+                {{ instance.primary_cta_text }}
+                <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </a>
+            {% endif %}
+
+            {% if instance.secondary_cta_text and instance.secondary_cta_url %}
+            <a
+                href="{{ instance.secondary_cta_url }}"
+                class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 rounded-xl border border-slate-300 dark:border-night-750 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-night-850 font-medium text-base transition-colors duration-200"
+            >
+                {{ instance.secondary_cta_text }}
+            </a>
+            {% endif %}
+        </div>
+
+        <!-- Trust Badges -->
+        <div class="mt-12 pt-8 border-t border-slate-200/80 dark:border-night-800 flex flex-wrap items-center justify-center gap-8 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+            <span class="inline-flex items-center gap-1.5">
+                <svg class="w-4 h-4 text-calmTeal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                Zero Commercial Data Tracking
+            </span>
+            <span class="inline-flex items-center gap-1.5">
+                <svg class="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                Verified Neurodivergent Safe Spaces
+            </span>
+            <span class="inline-flex items-center gap-1.5">
+                <svg class="w-4 h-4 text-warmAmber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                Sensory-Friendly Design Standards
+            </span>
+        </div>
+    </div>
+</section>

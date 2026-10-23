@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     "djangocms_text_ckeditor",
     # Project Apps
     "apps.core",
+    "apps.marketing_cms",
 ]
 
 MIDDLEWARE = [

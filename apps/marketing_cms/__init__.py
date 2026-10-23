@@ -1,0 +1,3 @@
+"""
+Marketing CMS application package.
+"""
