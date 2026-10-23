@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "triberaised-django-cms"
+version = "0.1.0"
+description = "TribeRaised Marketing Website powered by Django 4.2 LTS and Django CMS 4"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "Django>=4.2.0,<5.0.0",
+    "django-cms>=4.1.0,<5.0.0",
+    "djangocms-admin-style>=3.2.0",
+    "djangocms-text-ckeditor>=5.1.0",
+    "django-sekizai>=4.1.0",
+    "django-treebeard>=4.7.0",
+    "Pillow>=10.2.0",
+    "django-environ>=0.11.2",
+    "psycopg2-binary>=2.9.9",
+    "gunicorn>=21.2.0",
+    "whitenoise[brotli]>=6.6.0",
+]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings.local"
+python_files = ["test_*.py", "*_test.py"]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::PendingDeprecationWarning",
+]
+
+[tool.black]
+line-length = 100
+target-version = ["py312"]
