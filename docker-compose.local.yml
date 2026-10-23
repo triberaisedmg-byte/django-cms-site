@@ -1,11 +1,14 @@
 services:
   # ------------------------------------------------------------------------------
   # Web Tier: Django CMS Marketing Application
+  # Attached to shared TribeRaised Docker Network (triberaised_tr-network)
+  # Uses shared PostgreSQL 18 instance (tr-profile-postgres)
   # ------------------------------------------------------------------------------
   web:
     build:
       context: .
       dockerfile: Dockerfile
+    image: tr-django-cms:latest
     container_name: tr-django-cms
     restart: unless-stopped
     env_file:
@@ -15,56 +18,33 @@ services:
       DJANGO_SETTINGS_MODULE: config.settings.local
       DEBUG: "True"
       PORT: "8000"
-      POSTGRES_HOST: ${POSTGRES_HOST:-db}
-      POSTGRES_PORT: "5432"
+      POSTGRES_HOST: ${POSTGRES_HOST:-tr-profile-postgres}
+      POSTGRES_PORT: ${POSTGRES_PORT:-5432}
       POSTGRES_DB: ${POSTGRES_DB:-triberaised_cms}
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      DATABASE_URL: postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@${POSTGRES_HOST:-db}:5432/${POSTGRES_DB:-triberaised_cms}
-      ALLOWED_HOSTS: localhost,127.0.0.1,0.0.0.0,[::1],web
+      DATABASE_URL: ${DATABASE_URL:-postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@${POSTGRES_HOST:-tr-profile-postgres}:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-triberaised_cms}}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1,0.0.0.0,[::1],web}
     ports:
       - "${PORT:-8001}:8000"
     volumes:
       - .:/app
       - cms_media:/app/media
       - cms_staticfiles:/app/staticfiles
-    depends_on:
-      db:
-        condition: service_healthy
     command: >
       sh -c "python manage.py migrate &&
              python manage.py runserver 0.0.0.0:8000"
     networks:
       - tr-network
 
-  # ------------------------------------------------------------------------------
-  # Database Tier: Local PostgreSQL 18
-  # ------------------------------------------------------------------------------
-  db:
-    image: postgres:18-alpine
-    container_name: tr-cms-db
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-triberaised_cms}
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-    ports:
-      - "${POSTGRES_HOST_PORT:-5433}:5432"
-    volumes:
-      - cms_pgdata:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-triberaised_cms}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    networks:
-      - tr-network
-
+# ------------------------------------------------------------------------------
+# Shared TribeRaised Bridge Network
+# ------------------------------------------------------------------------------
 networks:
   tr-network:
-    driver: bridge
+    name: triberaised_tr-network
+    external: true
 
 volumes:
-  cms_pgdata:
   cms_media:
   cms_staticfiles:
