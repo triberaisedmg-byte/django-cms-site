@@ -142,12 +142,28 @@ echo -e "${BLUE}[5/6] Launching container services and applying migrations...${N
 docker compose -f "$COMPOSE_FILE" up -d
 echo -e "${GREEN}✓ Container launched.${NC}\n"
 
-# 6. Summary & Useful Commands
-echo -e "${BLUE}[6/6] Docker Container Status:${NC}"
-docker compose -f "$COMPOSE_FILE" ps
+# 6. Service Readiness Probe
+echo -e "${BLUE}[6/6] Verifying service readiness probe (http://localhost:${PORT}/healthz)...${NC}"
+printf "  Waiting for Django CMS..."
+READY=false
+for i in {1..30}; do
+    STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" "http://localhost:${PORT}/healthz" 2>/dev/null || true)
+    if [ "$STATUS_CODE" = "200" ]; then
+        echo -e " ${GREEN}Ready (HTTP 200 OK)!${NC}\n"
+        READY=true
+        break
+    fi
+    printf "."
+    sleep 1
+done
+
+if [ "$READY" = false ]; then
+    echo -e "\n${YELLOW}Warning: Service health check timed out. Recent container logs:${NC}"
+    docker compose -f "$COMPOSE_FILE" logs --tail 25 web
+fi
 
 echo -e "\n${BOLD}${GREEN}================================================================${NC}"
-echo -e "${BOLD}${GREEN}  Deployment Initialization Completed!                         ${NC}"
+echo -e "${BOLD}${GREEN}  Stack Deployed Successfully!                                 ${NC}"
 echo -e "${BOLD}${GREEN}================================================================${NC}"
 echo -e "  ${BOLD}Marketing Site:${NC}      http://localhost:${PORT}/"
 echo -e "  ${BOLD}Admin Dashboard:${NC}     http://localhost:${PORT}/admin/"

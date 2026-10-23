@@ -18,12 +18,12 @@ services:
       DJANGO_SETTINGS_MODULE: config.settings.local
       DEBUG: "True"
       PORT: "8000"
-      POSTGRES_HOST: ${POSTGRES_HOST:-tr-profile-postgres}
+      POSTGRES_HOST: ${DOCKER_POSTGRES_HOST:-tr-profile-postgres}
       POSTGRES_PORT: ${POSTGRES_PORT:-5432}
       POSTGRES_DB: ${POSTGRES_DB:-triberaised_cms}
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      DATABASE_URL: ${DATABASE_URL:-postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@${POSTGRES_HOST:-tr-profile-postgres}:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-triberaised_cms}}
+      DATABASE_URL: ${DOCKER_DATABASE_URL:-postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@${DOCKER_POSTGRES_HOST:-tr-profile-postgres}:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-triberaised_cms}}
       ALLOWED_HOSTS: ${ALLOWED_HOSTS:-localhost,127.0.0.1,0.0.0.0,[::1],web}
     ports:
       - "${PORT:-8001}:8000"
@@ -33,7 +33,7 @@ services:
       - cms_staticfiles:/app/staticfiles
     command: >
       sh -c "python manage.py migrate &&
-             python manage.py runserver 0.0.0.0:8000"
+             exec python manage.py runserver 0.0.0.0:8000"
     networks:
       - tr-network
 
